@@ -24,7 +24,8 @@ public class RandomCommandMixin {
         if (source.isExecutedByPlayer()) {
             var player = source.getPlayer();
             if (!HidePlayer.getVisibilityManager().getPlayerCapability(player).showSystemMessage()) {
-                return new HiddenPlayerText(message);
+                assert player != null;
+                return new HiddenPlayerText(message, player);
             }
         }
         return message;

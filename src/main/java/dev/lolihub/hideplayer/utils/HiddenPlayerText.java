@@ -1,5 +1,6 @@
 package dev.lolihub.hideplayer.utils;
 
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -9,9 +10,11 @@ import java.util.List;
 
 public class HiddenPlayerText implements Text {
     private final Text text;
+    private final String playerUUID;
 
-    public HiddenPlayerText(Text text) {
+    public HiddenPlayerText(Text text, ServerPlayerEntity player) {
         this.text = text;
+        this.playerUUID = player.getUuidAsString();
     }
 
     @Override
@@ -32,5 +35,9 @@ public class HiddenPlayerText implements Text {
     @Override
     public OrderedText asOrderedText() {
         return text.asOrderedText();
+    }
+
+    public String _getPlayerUUID() {
+        return playerUUID;
     }
 }

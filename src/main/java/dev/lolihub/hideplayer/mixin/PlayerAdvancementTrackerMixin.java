@@ -24,7 +24,7 @@ public class PlayerAdvancementTrackerMixin {
     )
     private Text modifyAdvancementMessage(Text message) {
         if (!HidePlayer.getVisibilityManager().getPlayerCapability(owner).showSystemMessage()) {
-            return new HiddenPlayerText(message);
+            return new HiddenPlayerText(message, owner);
         }
         return message;
     }

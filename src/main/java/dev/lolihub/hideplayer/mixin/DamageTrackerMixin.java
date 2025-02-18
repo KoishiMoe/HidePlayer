@@ -23,7 +23,7 @@ public class DamageTrackerMixin {
     private void onGetDeathMessage(CallbackInfoReturnable<Text> cir) {
         if (entity instanceof ServerPlayerEntity player) {
             if (!HidePlayer.getVisibilityManager().getPlayerCapability(player).showSystemMessage()) {
-                cir.setReturnValue(new HiddenPlayerText(cir.getReturnValue()));
+                cir.setReturnValue(new HiddenPlayerText(cir.getReturnValue(), player));
             }
         }
     }

@@ -33,7 +33,7 @@ public class ServerPlayNetworkHandlerMixin {
     )
     private Text onPlayerLeaveBroadcast(Text message) {
         if (!HidePlayer.getVisibilityManager().getPlayerCapability(this.player).showSystemMessage()) {
-            return new HiddenPlayerText(message);
+            return new HiddenPlayerText(message, this.player);
         }
         return message;
     }

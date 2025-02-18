@@ -8,10 +8,12 @@ public class PlayerCapability {
     static class HideFrom {
         boolean systemMessage = false;
         boolean chatMessage = false;
-        boolean tabList = false;
+
+        boolean inGame = false;  // tab list, social, target selector, and rendering.
+        // Client will log `Server attempted to add player prior to sending player info (Player id: <uuid>)`. Will leak player's UUID. Currently no client-side crash found.
+
+        boolean playerListing = false;
         boolean scoreBoard = false;
-        boolean visual = false;
-        boolean targetSelector = false;
     }
 
     static class Privilege {
@@ -50,43 +52,34 @@ public class PlayerCapability {
         return HidePlayer.getVisibilityManager().getPlayerCapability(sender).canSeeHiddenPlayer() || this.showChatMessage();
     }
 
-    public boolean showTabList() {
-        return !this.hideFrom.tabList;
+    public boolean showInGame() {
+        return !this.hideFrom.inGame;
     }
 
-    public boolean showTabList(ServerPlayerEntity player) {
-        return HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer() || this.showTabList();
+    public boolean showInGame(ServerPlayerEntity player) {
+        return HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer() || this.showInGame();
+    }
+
+    public boolean showPlayerListing() {
+        return !this.hideFrom.playerListing;
+    }
+
+    public boolean showPlayerListing(ServerPlayerEntity player) {
+        return HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer() || this.showPlayerListing();
     }
 
     public boolean showScoreBoard() {
         return !this.hideFrom.scoreBoard;
     }
 
-    public boolean showVisual() {
-        return !this.hideFrom.visual;
-    }
-
-    public boolean showVisual(ServerPlayerEntity player) {
-        return HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer() || this.showVisual();
-    }
-
-    public boolean showTargetSelector() {
-        return !this.hideFrom.targetSelector;
-    }
-
-    public boolean showTargetSelector(ServerPlayerEntity player) {
-        return HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer() || this.showTargetSelector();
-    }
-
     public void flush() {
         if (this.player != null) {
-            this.hideFrom.systemMessage = Permissions.check(this.player, "hideplayer.hidesystemmessage");
-            this.hideFrom.chatMessage = Permissions.check(this.player, "hideplayer.hidechatmessage");
-            this.hideFrom.tabList = Permissions.check(this.player, "hideplayer.hidetablist");
-            this.hideFrom.scoreBoard = Permissions.check(this.player, "hideplayer.hidescoreboard");
-            this.hideFrom.visual = Permissions.check(this.player, "hideplayer.hidevisual");
-            this.hideFrom.targetSelector = Permissions.check(this.player, "hideplayer.hidetargetselector");
-            this.privilege.canSeeHiddenPlayer = Permissions.check(this.player, "hideplayer.canseehiddenplayer", 2);
+            this.hideFrom.systemMessage = Permissions.check(this.player, "hideplayer.hide.systemmessage");
+            this.hideFrom.chatMessage = Permissions.check(this.player, "hideplayer.hide.chatmessage");
+            this.hideFrom.inGame = Permissions.check(this.player, "hideplayer.hide.ingame");
+            this.hideFrom.playerListing = Permissions.check(this.player, "hideplayer.hide.playerlisting");
+            this.hideFrom.scoreBoard = Permissions.check(this.player, "hideplayer.hide.scoreboard");
+            this.privilege.canSeeHiddenPlayer = Permissions.check(this.player, "hideplayer.privilege.seehiddenplayer", 2);
         }
     }
 }
