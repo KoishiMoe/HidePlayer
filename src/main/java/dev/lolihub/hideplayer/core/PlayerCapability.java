@@ -6,7 +6,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 public class PlayerCapability {
     static class HideFrom {
-        boolean systemMessage = false;  // TODO: Advancement
+        boolean systemMessage = false;
         boolean chatMessage = false;
         boolean tabList = false;
         boolean scoreBoard = false;
