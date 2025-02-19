@@ -13,6 +13,7 @@
     "ServerChunkLoadingManagerMixin",
     "ServerHandshakeNetworkHandlerMixin",
     "ServerPlayNetworkHandlerMixin",
+    "ServerScoreboardMixin",
     "TeamMsgCommandMixin"
   ],
   "injectors": {

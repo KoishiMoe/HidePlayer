@@ -62,6 +62,12 @@ public class PlayerCapability {
         return !this.hideFrom.scoreBoard;
     }
 
+    public boolean showScoreBoard(ServerPlayerEntity player) {
+        return player.getUuidAsString().equals(this.player.getUuidAsString())
+                || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer()
+                || this.showScoreBoard();
+    }
+
     public void flush() {
         if (this.player != null) {
             this.hideFrom.systemMessage = Permissions.check(this.player, "hideplayer.hide.systemmessage");
@@ -69,6 +75,11 @@ public class PlayerCapability {
             this.hideFrom.statusAndQuery = Permissions.check(this.player, "hideplayer.hide.statusandquery");
             this.hideFrom.scoreBoard = Permissions.check(this.player, "hideplayer.hide.scoreboard");
             this.privilege.canSeeHiddenPlayer = Permissions.check(this.player, "hideplayer.privilege.seehiddenplayer", 2);
+        }
+        if (this.hideFrom.scoreBoard) {
+            HidePlayer.getVisibilityManager().getScoreBoardCache().add(this.player.getGameProfile().getName());
+        } else {
+            HidePlayer.getVisibilityManager().getScoreBoardCache().remove(this.player.getGameProfile().getName());
         }
     }
 }

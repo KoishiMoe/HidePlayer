@@ -9,12 +9,17 @@ import net.minecraft.server.MinecraftServer;
 import org.jetbrains.annotations.Nullable;
 
 public class HidePlayer implements ModInitializer {
+    public static final String MOD_ID = "hideplayer";
+
     private static final VisibilityManager visibilityManager = new VisibilityManager();
     private static MinecraftServer server = null;
 
     @Override
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> HidePlayer.server = server);
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            visibilityManager.getScoreBoardCache().save();
+        });
         PlayerJoinCallback.EVENT.register(visibilityManager::playerJoin);
         PlayerLeaveCallback.EVENT.register(visibilityManager::playerLeave);
     }

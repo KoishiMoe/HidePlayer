@@ -9,10 +9,14 @@ import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.network.packet.s2c.play.ScoreboardScoreUpdateS2CPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ConnectedClientData;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,6 +31,7 @@ import java.util.List;
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
     @Shadow public abstract List<ServerPlayerEntity> getPlayerList();
+    @Shadow @Final private MinecraftServer server;
 
     @Inject(at = @At("TAIL"), method = "onPlayerConnect")
     private void onPlayerJoin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
@@ -143,5 +148,28 @@ public abstract class PlayerManagerMixin {
             }
         }
         return packet;
+    }
+
+    @Redirect(
+            method = "sendScoreboard",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"
+            )
+    )
+    private void redirectSendScoreboard(ServerPlayNetworkHandler instance, Packet<?> packet) {
+        if (packet instanceof ScoreboardScoreUpdateS2CPacket scorePacket) {
+            ServerPlayerEntity viewer = instance.getPlayer();
+            String targetName = scorePacket.scoreHolderName();
+            ServerPlayerEntity target = server.getPlayerManager().getPlayer(targetName);
+
+            if (targetName.equals(viewer.getGameProfile().getName())
+                    || HidePlayer.getVisibilityManager().getPlayerCapability(viewer).canSeeHiddenPlayer()
+                    || !HidePlayer.getVisibilityManager().getScoreBoardCache().check(targetName)) {
+                instance.sendPacket(packet);
+            }
+        } else {
+            instance.sendPacket(packet);
+        }
     }
 }
