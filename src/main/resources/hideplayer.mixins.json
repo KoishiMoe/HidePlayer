@@ -8,6 +8,7 @@
     "PlayerAdvancementTrackerMixin",
     "PlayerManagerMixin",
     "RandomCommandMixin",
+    "ServerChunkLoadingManagerMixin",
     "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {
