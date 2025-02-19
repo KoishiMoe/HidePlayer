@@ -8,8 +8,10 @@
     "MessageCommandMixin",
     "PlayerAdvancementTrackerMixin",
     "PlayerManagerMixin",
+    "QueryResponseHandlerMixin",
     "RandomCommandMixin",
     "ServerChunkLoadingManagerMixin",
+    "ServerHandshakeNetworkHandlerMixin",
     "ServerPlayNetworkHandlerMixin",
     "TeamMsgCommandMixin"
   ],

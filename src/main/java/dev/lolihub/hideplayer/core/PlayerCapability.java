@@ -9,9 +9,8 @@ public class PlayerCapability {
         boolean systemMessage = false;
 
         boolean inGame = false;  // tab list, social, target selector, chat, and rendering.
-        // Client will log `Server attempted to add player prior to sending player info (Player id: <uuid>)`. Will leak player's UUID.
 
-        boolean playerListing = false;
+        boolean statusAndQuery = false;
         boolean scoreBoard = false;
     }
 
@@ -55,14 +54,8 @@ public class PlayerCapability {
                 || this.showInGame();
     }
 
-    public boolean showPlayerListing() {
-        return !this.hideFrom.playerListing;
-    }
-
-    public boolean showPlayerListing(ServerPlayerEntity player) {
-        return player.getUuidAsString().equals(this.player.getUuidAsString())
-                || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer()
-                || this.showPlayerListing();
+    public boolean showStatusAndQuery() {
+        return !this.hideFrom.statusAndQuery;
     }
 
     public boolean showScoreBoard() {
@@ -73,7 +66,7 @@ public class PlayerCapability {
         if (this.player != null) {
             this.hideFrom.systemMessage = Permissions.check(this.player, "hideplayer.hide.systemmessage");
             this.hideFrom.inGame = Permissions.check(this.player, "hideplayer.hide.ingame");
-            this.hideFrom.playerListing = Permissions.check(this.player, "hideplayer.hide.playerlisting");
+            this.hideFrom.statusAndQuery = Permissions.check(this.player, "hideplayer.hide.statusandquery");
             this.hideFrom.scoreBoard = Permissions.check(this.player, "hideplayer.hide.scoreboard");
             this.privilege.canSeeHiddenPlayer = Permissions.check(this.player, "hideplayer.privilege.seehiddenplayer", 2);
         }
