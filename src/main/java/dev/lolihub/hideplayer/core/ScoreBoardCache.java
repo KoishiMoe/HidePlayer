@@ -31,8 +31,8 @@ public class ScoreBoardCache {
     }
 
 
-    public boolean check(String playerName) {
-        return scoreBoardHiddenCache.contains(playerName);
+    public boolean checkNoHide(String playerName) {
+        return !scoreBoardHiddenCache.contains(playerName);
     }
 
     public void add(String playerName) {

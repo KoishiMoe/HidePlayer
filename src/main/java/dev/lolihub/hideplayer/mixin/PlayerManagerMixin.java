@@ -2,28 +2,21 @@ package dev.lolihub.hideplayer.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.lolihub.hideplayer.HidePlayer;
-import dev.lolihub.hideplayer.events.PlayerJoinCallback;
 import dev.lolihub.hideplayer.utils.HiddenPlayerText;
-import net.minecraft.network.ClientConnection;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.network.packet.s2c.play.ScoreboardScoreUpdateS2CPacket;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -31,13 +24,9 @@ import java.util.List;
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
     @Shadow public abstract List<ServerPlayerEntity> getPlayerList();
-    @Shadow @Final private MinecraftServer server;
 
-    @Inject(at = @At("TAIL"), method = "onPlayerConnect")
-    private void onPlayerJoin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
-        PlayerJoinCallback.EVENT.invoker().joinServer(player);
-    }
-
+    // broadcast message
+    // many methods call this method, check for HiddenPlayerText
     @Redirect(
             method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Z)V",
             at = @At(
@@ -57,6 +46,7 @@ public abstract class PlayerManagerMixin {
         instance.sendMessageToClient(text, overlay);
     }
 
+    // normal chat message
     @Redirect(
             method = "broadcast(Lnet/minecraft/network/message/SignedMessage;Ljava/util/function/Predicate;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$Parameters;)V",
             at = @At(
@@ -71,6 +61,7 @@ public abstract class PlayerManagerMixin {
         instance.sendChatMessage(message, filterMaskEnabled, params);
     }
 
+    // join message
     @ModifyArg(
             method = "onPlayerConnect",
             at = @At(
@@ -80,12 +71,13 @@ public abstract class PlayerManagerMixin {
             index = 0
     )
     private Text redirectJoinBroadcast(Text message, @Local(argsOnly = true) ServerPlayerEntity player) {
-        if (!HidePlayer.getVisibilityManager().getPlayerCapability(player).showSystemMessage()) {
+        if (HidePlayer.getVisibilityManager().getPlayerCapability(player).hideSystemMessage()) {
             return new HiddenPlayerText(message, player);
         }
         return message;
     }
 
+    // playlist to others when player join
     @Redirect(
             method = "onPlayerConnect",
             at = @At(
@@ -95,11 +87,12 @@ public abstract class PlayerManagerMixin {
     )
     private void redirectSendToAll(PlayerManager instance, Packet<?> packet, @Local(argsOnly = true) ServerPlayerEntity player) {
         assert packet instanceof PlayerListS2CPacket;
-        if (HidePlayer.getVisibilityManager().getPlayerCapability(player).showInGame()) {
+        var vm = HidePlayer.getVisibilityManager();
+        if (vm.getPlayerCapability(player).showInGame()) {
             instance.sendToAll(packet);
         } else {
             for (ServerPlayerEntity p : instance.getPlayerList()) {
-                if (HidePlayer.getVisibilityManager().getPlayerCapability(p).canSeeHiddenPlayer()) {
+                if (vm.getPlayerCapability(p).canSeeHiddenPlayer()) {
                     p.networkHandler.sendPacket(packet);
                 }
             }
@@ -107,6 +100,7 @@ public abstract class PlayerManagerMixin {
         }
     }
 
+    // playerlist to everyone when update player latency
     @Redirect(
             method = "updatePlayerLatency",
             at = @At(
@@ -115,14 +109,14 @@ public abstract class PlayerManagerMixin {
             )
     )
     private void redirectSendToAll2(PlayerManager instance, Packet<?> packet) {
-        var hiddenPlayers = instance.getPlayerList().stream().filter(p -> !HidePlayer.getVisibilityManager().getPlayerCapability(p).showInGame()).toList();
-        if (hiddenPlayers.isEmpty()) {
+        var vm = HidePlayer.getVisibilityManager();
+        var noHiddenPlayers = instance.getPlayerList().stream().filter(p -> vm.getPlayerCapability(p).showInGame()).toList();
+        if (noHiddenPlayers.size() == instance.getCurrentPlayerCount()) {
             instance.sendToAll(packet);
         } else {
-            var packet2 = new PlayerListS2CPacket(EnumSet.of(PlayerListS2CPacket.Action.UPDATE_LATENCY),
-                    instance.getPlayerList().stream().filter(p -> !hiddenPlayers.contains(p)).toList());
+            var packet2 = new PlayerListS2CPacket(EnumSet.of(PlayerListS2CPacket.Action.UPDATE_LATENCY), noHiddenPlayers);
             for (ServerPlayerEntity p : instance.getPlayerList()) {
-                if (HidePlayer.getVisibilityManager().getPlayerCapability(p).canSeeHiddenPlayer()) {
+                if (vm.getPlayerCapability(p).canSeeHiddenPlayer()) {
                     p.networkHandler.sendPacket(packet);
                 } else {
                     p.networkHandler.sendPacket(packet2);
@@ -131,6 +125,7 @@ public abstract class PlayerManagerMixin {
         }
     }
 
+    // playerlist to the joining player
     @ModifyArg(
             method = "onPlayerConnect",
             at = @At(
@@ -150,6 +145,7 @@ public abstract class PlayerManagerMixin {
         return packet;
     }
 
+    // initial scoreboard setup when player join
     @Redirect(
             method = "sendScoreboard",
             at = @At(
@@ -161,11 +157,10 @@ public abstract class PlayerManagerMixin {
         if (packet instanceof ScoreboardScoreUpdateS2CPacket scorePacket) {
             ServerPlayerEntity viewer = instance.getPlayer();
             String targetName = scorePacket.scoreHolderName();
-            ServerPlayerEntity target = server.getPlayerManager().getPlayer(targetName);
 
             if (targetName.equals(viewer.getGameProfile().getName())
                     || HidePlayer.getVisibilityManager().getPlayerCapability(viewer).canSeeHiddenPlayer()
-                    || !HidePlayer.getVisibilityManager().getScoreBoardCache().check(targetName)) {
+                    || HidePlayer.getVisibilityManager().getScoreBoardCache().checkNoHide(targetName)) {
                 instance.sendPacket(packet);
             }
         } else {

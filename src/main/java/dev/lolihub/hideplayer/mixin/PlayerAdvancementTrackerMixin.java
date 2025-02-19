@@ -15,6 +15,7 @@ public class PlayerAdvancementTrackerMixin {
     @Shadow
     private ServerPlayerEntity owner;
 
+    // advancement message
     @ModifyArg(
             method = "method_53637",  // advancement.value().display().ifPresent lambda
             at = @At(
@@ -23,7 +24,7 @@ public class PlayerAdvancementTrackerMixin {
             )
     )
     private Text modifyAdvancementMessage(Text message) {
-        if (!HidePlayer.getVisibilityManager().getPlayerCapability(owner).showSystemMessage()) {
+        if (HidePlayer.getVisibilityManager().getPlayerCapability(owner).hideSystemMessage()) {
             return new HiddenPlayerText(message, owner);
         }
         return message;

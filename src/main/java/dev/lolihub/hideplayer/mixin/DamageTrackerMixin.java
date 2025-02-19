@@ -19,10 +19,11 @@ public class DamageTrackerMixin {
     @Shadow
     private LivingEntity entity;
 
+    // death message
     @Inject(method = "getDeathMessage", at = @At("RETURN"), cancellable = true)
     private void onGetDeathMessage(CallbackInfoReturnable<Text> cir) {
         if (entity instanceof ServerPlayerEntity player) {
-            if (!HidePlayer.getVisibilityManager().getPlayerCapability(player).showSystemMessage()) {
+            if (HidePlayer.getVisibilityManager().getPlayerCapability(player).hideSystemMessage()) {
                 cir.setReturnValue(new HiddenPlayerText(cir.getReturnValue(), player));
             }
         }

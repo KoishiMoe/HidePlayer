@@ -1,7 +1,6 @@
 package dev.lolihub.hideplayer;
 
 import dev.lolihub.hideplayer.core.VisibilityManager;
-import dev.lolihub.hideplayer.events.PlayerJoinCallback;
 import dev.lolihub.hideplayer.events.PlayerLeaveCallback;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -17,10 +16,7 @@ public class HidePlayer implements ModInitializer {
     @Override
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> HidePlayer.server = server);
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-            visibilityManager.getScoreBoardCache().save();
-        });
-        PlayerJoinCallback.EVENT.register(visibilityManager::playerJoin);
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> visibilityManager.getScoreBoardCache().save());
         PlayerLeaveCallback.EVENT.register(visibilityManager::playerLeave);
     }
 

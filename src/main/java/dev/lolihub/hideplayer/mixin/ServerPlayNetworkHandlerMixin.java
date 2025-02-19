@@ -19,11 +19,13 @@ public class ServerPlayNetworkHandlerMixin {
     @Shadow
     public ServerPlayerEntity player;
 
+    // player leave event
     @Inject(at = @At(value = "TAIL"), method = "onDisconnected")
     private void onPlayerLeave(DisconnectionInfo info, CallbackInfo ci) {
         PlayerLeaveCallback.EVENT.invoker().leaveServer(this.player);
     }
 
+    // player leave message
     @ModifyArg(
             method = "cleanUp",
             at = @At(
@@ -32,7 +34,7 @@ public class ServerPlayNetworkHandlerMixin {
             )
     )
     private Text onPlayerLeaveBroadcast(Text message) {
-        if (!HidePlayer.getVisibilityManager().getPlayerCapability(this.player).showSystemMessage()) {
+        if (HidePlayer.getVisibilityManager().getPlayerCapability(this.player).hideSystemMessage()) {
             return new HiddenPlayerText(message, this.player);
         }
         return message;

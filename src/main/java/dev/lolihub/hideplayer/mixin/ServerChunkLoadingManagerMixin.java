@@ -16,12 +16,12 @@ public class ServerChunkLoadingManagerMixin {
     @Shadow
     Entity entity;
 
+    // Prevents server from sending entity spawn packet to players who shouldn't see the player. This solves the issue of leaking player's UUID.
     @Inject(
             at = @At("HEAD"),
             method = "updateTrackedStatus(Lnet/minecraft/server/network/ServerPlayerEntity;)V",
             cancellable = true
     )
-    // Prevents server from sending entity spawn packet to players who shouldn't see the player. This solves the issue of leaking player's UUID.
     private void onUpdateTrackedStatus(ServerPlayerEntity player, CallbackInfo ci) {
         if (entity instanceof ServerPlayerEntity && player != entity &&
                 !HidePlayer.getVisibilityManager().getPlayerCapability((ServerPlayerEntity) entity).showInGame(player)) {

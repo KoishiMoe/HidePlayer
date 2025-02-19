@@ -20,10 +20,7 @@ public class PlayerCapability {
 
     HideFrom hideFrom = new HideFrom();
     Privilege privilege = new Privilege();
-    ServerPlayerEntity player = null;  // Store player instead of uuid, as the player object is needed to check permissions
-
-    public PlayerCapability() {
-    }
+    ServerPlayerEntity player;  // Store player instead of uuid, as the player object is needed to check permissions
 
     public PlayerCapability(ServerPlayerEntity player) {
         this.player = player;
@@ -34,14 +31,8 @@ public class PlayerCapability {
         return this.privilege.canSeeHiddenPlayer;
     }
 
-    public boolean showSystemMessage() {
-        return !this.hideFrom.systemMessage;
-    }
-
-    public boolean showSystemMessage(ServerPlayerEntity player) {
-        return player.getUuidAsString().equals(this.player.getUuidAsString())
-                ||  HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer()
-                || this.showSystemMessage();
+    public boolean hideSystemMessage() {
+        return this.hideFrom.systemMessage;
     }
 
     public boolean showInGame() {
@@ -56,16 +47,6 @@ public class PlayerCapability {
 
     public boolean showStatusAndQuery() {
         return !this.hideFrom.statusAndQuery;
-    }
-
-    public boolean showScoreBoard() {
-        return !this.hideFrom.scoreBoard;
-    }
-
-    public boolean showScoreBoard(ServerPlayerEntity player) {
-        return player.getUuidAsString().equals(this.player.getUuidAsString())
-                || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer()
-                || this.showScoreBoard();
     }
 
     public void flush() {

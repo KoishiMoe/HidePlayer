@@ -13,16 +13,6 @@ public class VisibilityManager {
         scoreBoardCache = new ScoreBoardCache();
     }
 
-    public void playerJoin(ServerPlayerEntity player) {
-//        var capability = CapabilityMap.get(player);
-//        if (capability != null) {
-//            capability.flush();
-//            return;
-//        }
-//        capability = new PlayerCapability(player);
-//        CapabilityMap.put(player, capability);
-    }
-
     public void playerLeave(ServerPlayerEntity player) {
         capabilityMap.remove(player);
     }
@@ -34,12 +24,6 @@ public class VisibilityManager {
             capabilityMap.put(player, capability);
         }
         return capability;
-    }
-
-    public void flushCapability() {
-        for (var capability : capabilityMap.values()) {
-            capability.flush();
-        }
     }
 
     public ScoreBoardCache getScoreBoardCache() {

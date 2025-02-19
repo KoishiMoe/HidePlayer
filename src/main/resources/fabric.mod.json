@@ -4,8 +4,12 @@
   "version": "${version}",
   "name": "HidePlayer",
   "description": "Hide specific players in your server",
-  "authors": [],
-  "contact": {},
+  "authors": [
+    "KoishiMoe"
+  ],
+  "contact": {
+    "repo": "https://github.com/KoishiMoe/HidePlayer"
+  },
   "license": "AGPL-3.0",
   "icon": "assets/hideplayer/icon.png",
   "environment": "server",
@@ -20,6 +24,6 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": ">=${minecraft_version}"
   }
 }

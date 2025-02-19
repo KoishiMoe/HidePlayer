@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(TeamMsgCommand.class)
 public class TeamMsgCommandMixin {
+    // /teammsg
     @Redirect(
             method = "execute",
             at = @At(

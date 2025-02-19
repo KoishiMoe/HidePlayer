@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(RandomCommand.class)
 public class RandomCommandMixin {
+    // /random roll will broadcast a message
     @ModifyArg(
             method = "execute",
             at = @At(
@@ -23,7 +24,7 @@ public class RandomCommandMixin {
     private static Text modifyRollMessage(Text message, @Local(argsOnly = true) ServerCommandSource source) {
         if (source.isExecutedByPlayer()) {
             var player = source.getPlayer();
-            if (!HidePlayer.getVisibilityManager().getPlayerCapability(player).showSystemMessage()) {
+            if (HidePlayer.getVisibilityManager().getPlayerCapability(player).hideSystemMessage()) {
                 assert player != null;
                 return new HiddenPlayerText(message, player);
             }

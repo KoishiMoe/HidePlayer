@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(QueryResponseHandler.class)
 public class QueryResponseHandlerMixin {
+    // get player count, method 1
     @Redirect(
             method = "handle",
             at = @At(
@@ -25,6 +26,7 @@ public class QueryResponseHandlerMixin {
                 .count();
     }
 
+    // get player count, in rules reply
     @Redirect(
             method = "createRulesReply",
             at = @At(
@@ -36,6 +38,7 @@ public class QueryResponseHandlerMixin {
         return getFilteredPlayerCount(server);
     }
 
+    // get player names
     @Redirect(
             method = "createRulesReply",
             at = @At(
