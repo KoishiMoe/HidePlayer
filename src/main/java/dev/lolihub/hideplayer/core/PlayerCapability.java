@@ -7,10 +7,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class PlayerCapability {
     static class HideFrom {
         boolean systemMessage = false;
-        boolean chatMessage = false;
 
-        boolean inGame = false;  // tab list, social, target selector, and rendering.
-        // Client will log `Server attempted to add player prior to sending player info (Player id: <uuid>)`. Will leak player's UUID. Currently no client-side crash found.
+        boolean inGame = false;  // tab list, social, target selector, chat, and rendering.
+        // Client will log `Server attempted to add player prior to sending player info (Player id: <uuid>)`. Will leak player's UUID.
 
         boolean playerListing = false;
         boolean scoreBoard = false;
@@ -40,16 +39,10 @@ public class PlayerCapability {
         return !this.hideFrom.systemMessage;
     }
 
-    public boolean showSystemMessage(ServerPlayerEntity sender) {
-        return HidePlayer.getVisibilityManager().getPlayerCapability(sender).canSeeHiddenPlayer() || this.showSystemMessage();
-    }
-
-    public boolean showChatMessage() {
-        return !this.hideFrom.chatMessage;
-    }
-
-    public boolean showChatMessage(ServerPlayerEntity sender) {
-        return HidePlayer.getVisibilityManager().getPlayerCapability(sender).canSeeHiddenPlayer() || this.showChatMessage();
+    public boolean showSystemMessage(ServerPlayerEntity player) {
+        return player.getUuidAsString().equals(this.player.getUuidAsString())
+                ||  HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer()
+                || this.showSystemMessage();
     }
 
     public boolean showInGame() {
@@ -57,7 +50,9 @@ public class PlayerCapability {
     }
 
     public boolean showInGame(ServerPlayerEntity player) {
-        return HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer() || this.showInGame();
+        return player.getUuidAsString().equals(this.player.getUuidAsString())
+                || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer()
+                || this.showInGame();
     }
 
     public boolean showPlayerListing() {
@@ -65,7 +60,9 @@ public class PlayerCapability {
     }
 
     public boolean showPlayerListing(ServerPlayerEntity player) {
-        return HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer() || this.showPlayerListing();
+        return player.getUuidAsString().equals(this.player.getUuidAsString())
+                || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer()
+                || this.showPlayerListing();
     }
 
     public boolean showScoreBoard() {
@@ -75,7 +72,6 @@ public class PlayerCapability {
     public void flush() {
         if (this.player != null) {
             this.hideFrom.systemMessage = Permissions.check(this.player, "hideplayer.hide.systemmessage");
-            this.hideFrom.chatMessage = Permissions.check(this.player, "hideplayer.hide.chatmessage");
             this.hideFrom.inGame = Permissions.check(this.player, "hideplayer.hide.ingame");
             this.hideFrom.playerListing = Permissions.check(this.player, "hideplayer.hide.playerlisting");
             this.hideFrom.scoreBoard = Permissions.check(this.player, "hideplayer.hide.scoreboard");

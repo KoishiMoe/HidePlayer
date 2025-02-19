@@ -5,11 +5,13 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "DamageTrackerMixin",
+    "MessageCommandMixin",
     "PlayerAdvancementTrackerMixin",
     "PlayerManagerMixin",
     "RandomCommandMixin",
     "ServerChunkLoadingManagerMixin",
-    "ServerPlayNetworkHandlerMixin"
+    "ServerPlayNetworkHandlerMixin",
+    "TeamMsgCommandMixin"
   ],
   "injectors": {
     "defaultRequire": 1

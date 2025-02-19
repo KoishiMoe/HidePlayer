@@ -5,6 +5,8 @@ import dev.lolihub.hideplayer.HidePlayer;
 import dev.lolihub.hideplayer.events.PlayerJoinCallback;
 import dev.lolihub.hideplayer.utils.HiddenPlayerText;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.PlayerManager;
@@ -48,6 +50,20 @@ public abstract class PlayerManagerMixin {
             return;
         }
         instance.sendMessageToClient(text, overlay);
+    }
+
+    @Redirect(
+            method = "broadcast(Lnet/minecraft/network/message/SignedMessage;Ljava/util/function/Predicate;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$Parameters;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/network/ServerPlayerEntity;sendChatMessage(Lnet/minecraft/network/message/SentMessage;ZLnet/minecraft/network/message/MessageType$Parameters;)V"
+            )
+    )
+    private void redirectChatMessage(ServerPlayerEntity instance, SentMessage message, boolean filterMaskEnabled, MessageType.Parameters params, @Local(argsOnly = true) ServerPlayerEntity sender) {
+        if (sender != null && sender != instance && !HidePlayer.getVisibilityManager().getPlayerCapability(sender).showInGame(instance)) {
+            return;
+        }
+        instance.sendChatMessage(message, filterMaskEnabled, params);
     }
 
     @ModifyArg(
