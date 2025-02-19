@@ -25,27 +25,6 @@ import java.util.List;
 public abstract class PlayerManagerMixin {
     @Shadow public abstract List<ServerPlayerEntity> getPlayerList();
 
-    // broadcast message
-    // many methods call this method, check for HiddenPlayerText
-    @Redirect(
-            method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Z)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/network/ServerPlayerEntity;sendMessageToClient(Lnet/minecraft/text/Text;Z)V"
-            )
-    )
-    private void redirectSendMessageToClient(ServerPlayerEntity instance, Text text, boolean overlay) {
-        if (text instanceof HiddenPlayerText) {
-            if (HidePlayer.getVisibilityManager().getPlayerCapability(instance).canSeeHiddenPlayer()
-                || ((HiddenPlayerText) text)._getPlayerUUID().equals(instance.getUuidAsString())
-            ) {
-                instance.sendMessageToClient(text, overlay);
-            }
-            return;
-        }
-        instance.sendMessageToClient(text, overlay);
-    }
-
     // normal chat message
     @Redirect(
             method = "broadcast(Lnet/minecraft/network/message/SignedMessage;Ljava/util/function/Predicate;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$Parameters;)V",

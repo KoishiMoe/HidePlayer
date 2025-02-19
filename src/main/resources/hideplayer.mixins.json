@@ -12,6 +12,7 @@
     "RandomCommandMixin",
     "ServerChunkLoadingManagerMixin",
     "ServerHandshakeNetworkHandlerMixin",
+    "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",
     "ServerScoreboardMixin",
