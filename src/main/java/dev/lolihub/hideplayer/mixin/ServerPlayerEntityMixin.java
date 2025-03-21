@@ -73,13 +73,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                         () -> new DeathMessageS2CPacket(
                                 this.getId(),
                                 Text.translatable("death.attack.even_more_magic", this.getDisplayName()).styled(
-                                        style -> style.withHoverEvent(new HoverEvent(
-                                                        HoverEvent.Action.SHOW_TEXT,
-                                                        Text.translatable(
-                                                                "death.attack.message_too_long",
-                                                                Text.literal(((HiddenPlayerKillText) text)._getGenericText()
-                                                                        .asTruncatedString(256)).formatted(Formatting.YELLOW)
-                                                        )
+                                        style -> style.withHoverEvent(new HoverEvent.ShowText(
+                                                Text.translatable(
+                                                        "death.attack.message_too_long",
+                                                        Text.literal(((HiddenPlayerKillText) text)._getGenericText()
+                                                                .asTruncatedString(256)).formatted(Formatting.YELLOW)
+                                                )
                                                 )
                                         )
                                 )

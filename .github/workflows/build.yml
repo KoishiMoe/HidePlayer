@@ -68,5 +68,5 @@ jobs:
           # Only include this section if you wish to publish
           # your assets on GitHub.
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-tag: "v${{ env.version }}-1.21.4"
-          name: "Release v${{ env.version }} for 1.21.4"
+          github-tag: "v${{ env.version }}-1.21.5"
+          name: "Release v${{ env.version }} for 1.21.5"
