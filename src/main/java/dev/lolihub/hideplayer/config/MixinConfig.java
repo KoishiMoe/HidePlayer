@@ -23,18 +23,7 @@ public class MixinConfig {
                 }
             } else {
                 try (var os = new FileOutputStream(CONFIG_FILE.toFile())) {
-                    String defaultConfig = """
-                            # HidePlayer Mixin Configuration
-                            # This file is used to control which mixins are loaded by HidePlayer.
-                            # The key is the fully qualified class name of the mixin, and the value is a boolean indicating whether the mixin should be loaded.
-                            # If the key is not present in this file, the mixin will **still** be loaded.
-                            # Please note that this file is not reloaded at runtime, you need to restart the server to apply changes.
-                            # Also, this file is for advanced users only, who would like to solve compatibility issues with other mods, or tune the performance of HidePlayer.
-                            # Make sure you know what are the mixins used for by reading the source code of HidePlayer.
-                            
-                            # PLACEHOLDER #
-                            
-                            """; // generate this at build time
+                    String defaultConfig = DefaultConfig.DEFAULT_CONFIG;
                     os.write(defaultConfig.getBytes());
                 } catch (IOException e) {
                     throw new RuntimeException(e);

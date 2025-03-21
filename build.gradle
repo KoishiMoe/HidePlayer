@@ -113,10 +113,22 @@ task generateMixinConfigList {
         }
 
         // Update the MixinConfig class
-        def mixinConfigFile = project.file('src/main/java/dev/lolihub/hideplayer/config/MixinConfig.java')
-        def content = mixinConfigFile.text
-        def updatedContent = content.replace('# PLACEHOLDER #', mixinList.toString())
-        mixinConfigFile.text = updatedContent
+        def mixinConfigFile = project.file('src/main/java/dev/lolihub/hideplayer/config/DefaultConfig.java')
+        mixinConfigFile.text = """package dev.lolihub.hideplayer.config;
+
+public abstract class DefaultConfig {
+    public static final String DEFAULT_CONFIG = \"\"\"
+# HidePlayer Mixin Configuration
+# This file is used to control which mixins are loaded by HidePlayer.
+# The key is the fully qualified class name of the mixin, and the value is a boolean indicating whether the mixin should be loaded.
+# If the key is not present in this file, the mixin will **still** be loaded.
+# Please note that this file is not reloaded at runtime, you need to restart the server to apply changes.
+# Also, this file is for advanced users only, who would like to solve compatibility issues with other mods, or tune the performance of HidePlayer.
+# Make sure you know what are the mixins used for by reading the source code of HidePlayer.
+
+${mixinList.toString()}
+\"\"\";
+}"""
 
         println "Generated mixin config with ${mixinList.toString().count('\n')} entries"
     }
@@ -138,4 +150,4 @@ def findMixinClasses(File dir, String packageName, StringBuilder result) {
 }
 
 // Make the processResources task depend on the mixin config generation
-processResources.dependsOn generateMixinConfigList
+compileJava.dependsOn generateMixinConfigList
