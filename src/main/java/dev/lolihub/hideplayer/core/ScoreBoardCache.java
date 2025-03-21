@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class ScoreBoardCache {
-    private static final File cacheFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), HidePlayer.MOD_ID + "_cache.json");
+    private static final File cacheFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), HidePlayer.MOD_ID + ".cache");
 
     private final Set<String> scoreBoardHiddenCache = new HashSet<>();
 
