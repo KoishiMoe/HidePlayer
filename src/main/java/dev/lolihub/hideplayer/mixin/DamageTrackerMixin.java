@@ -30,18 +30,17 @@ public class DamageTrackerMixin {
     @Inject(method = "getDeathMessage", at = @At("RETURN"), cancellable = true)
     private void onGetDeathMessage(CallbackInfoReturnable<Text> cir) {
         // death caused by hidden player
-        if (recentDamage.isEmpty()) return;
-        DamageSource source = recentDamage.getLast().damageSource();
-        ServerPlayerEntity player;
-        if (source.getSource() instanceof ServerPlayerEntity) {
-            player = (ServerPlayerEntity) source.getSource();
-        } else if (entity.getPrimeAdversary() instanceof ServerPlayerEntity) {
-            player = (ServerPlayerEntity) entity.getPrimeAdversary();
-        } else {
-            return;
-        }
-        if (HidePlayer.getVisibilityManager().getPlayerCapability(player).hideSystemMessage()) {
-            cir.setReturnValue(new HiddenPlayerKillText(cir.getReturnValue(), entity, player));
+        if (!recentDamage.isEmpty()) {
+            DamageSource source = recentDamage.getLast().damageSource();
+            ServerPlayerEntity player = null;
+            if (source.getSource() instanceof ServerPlayerEntity) {
+                player = (ServerPlayerEntity) source.getSource();
+            } else if (entity.getPrimeAdversary() instanceof ServerPlayerEntity) {
+                player = (ServerPlayerEntity) entity.getPrimeAdversary();
+            }
+            if (player != null && HidePlayer.getVisibilityManager().getPlayerCapability(player).hideSystemMessage()) {
+                cir.setReturnValue(new HiddenPlayerKillText(cir.getReturnValue(), entity, player));
+            }
         }
 
         // death of hidden player
