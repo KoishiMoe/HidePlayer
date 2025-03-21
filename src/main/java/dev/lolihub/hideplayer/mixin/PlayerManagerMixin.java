@@ -2,13 +2,15 @@ package dev.lolihub.hideplayer.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.lolihub.hideplayer.HidePlayer;
+import dev.lolihub.hideplayer.utils.Commons;
 import dev.lolihub.hideplayer.utils.HiddenPlayerText;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.network.packet.s2c.play.ScoreboardScoreUpdateS2CPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.ServerMetadata;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -133,17 +135,18 @@ public abstract class PlayerManagerMixin {
             )
     )
     private void redirectSendScoreboard(ServerPlayNetworkHandler instance, Packet<?> packet) {
-        if (packet instanceof ScoreboardScoreUpdateS2CPacket scorePacket) {
-            ServerPlayerEntity viewer = instance.getPlayer();
-            String targetName = scorePacket.scoreHolderName();
+        Commons.filterScoreBoardPackets(instance, packet);
+    }
 
-            if (targetName.equals(viewer.getGameProfile().getName())
-                    || HidePlayer.getVisibilityManager().getPlayerCapability(viewer).canSeeHiddenPlayer()
-                    || HidePlayer.getVisibilityManager().getScoreBoardCache().checkNoHide(targetName)) {
-                instance.sendPacket(packet);
-            }
-        } else {
-            instance.sendPacket(packet);
-        }
+    // Currently no leak found in this call, but just in case
+    @Redirect(
+            method = "onPlayerConnect",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/MinecraftServer;getServerMetadata()Lnet/minecraft/server/ServerMetadata;"
+            )
+    )
+    private ServerMetadata getServerMetadata(MinecraftServer server) {
+        return Commons.getServerMetadata(server);
     }
 }

@@ -1,6 +1,7 @@
 package dev.lolihub.hideplayer.mixin;
 
 import dev.lolihub.hideplayer.HidePlayer;
+import dev.lolihub.hideplayer.utils.Commons;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.ScoreboardScoreUpdateS2CPacket;
 import net.minecraft.scoreboard.ServerScoreboard;
@@ -22,18 +23,7 @@ public class ServerScoreboardMixin {
             )
     )
     private void filterScoreboardPackets(ServerPlayNetworkHandler instance, Packet<?> packet) {
-        if (packet instanceof ScoreboardScoreUpdateS2CPacket scorePacket) {
-            ServerPlayerEntity viewer = instance.getPlayer();
-            String targetName = scorePacket.scoreHolderName();
-
-            if (targetName.equals(viewer.getGameProfile().getName())
-                    || HidePlayer.getVisibilityManager().getPlayerCapability(viewer).canSeeHiddenPlayer()
-                    || HidePlayer.getVisibilityManager().getScoreBoardCache().checkNoHide(targetName)) {
-                instance.sendPacket(packet);
-            }
-        } else {
-            instance.sendPacket(packet);
-        }
+        Commons.filterScoreBoardPackets(instance, packet);
     }
 
     // score update
