@@ -1,6 +1,13 @@
 # Hide Player
 
+[中文](README.zh.md)
+
 A Minecraft server mod that allows selectively hiding players from various server interfaces.
+
+## Supported Versions
+
+Currently only 1.21.4+ is supported, because I just wrote it for my own use and I'm not sure if anyone else would need it.
+If you need support for other versions, feel free to open an issue or a pull request.
 
 ## Features
 
@@ -35,6 +42,11 @@ Maybe useful for:
 1. Install a permissions manager
 2. Add this mod to your server
 3. Configure permissions for target players
+
+## Advanced Configuration
+
+Though generally not necessary, if you face any issues, like mod conflicts, or severe performance drops, you can edit `config/hideplayer.mixin.conf`
+and disable mixins selectively. Please note that this may break the mod functionality.
 
 ## License
 
