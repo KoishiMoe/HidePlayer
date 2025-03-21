@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "dev.lolihub.hideplayer.mixin",
   "compatibilityLevel": "JAVA_21",
+  "plugin": "dev.lolihub.hideplayer.utils.mixin.MixinPlugin",
   "mixins": [
     "DamageTrackerMixin",
     "MessageCommandMixin",

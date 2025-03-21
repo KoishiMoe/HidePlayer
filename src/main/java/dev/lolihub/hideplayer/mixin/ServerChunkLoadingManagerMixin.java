@@ -23,7 +23,7 @@ public class ServerChunkLoadingManagerMixin {
             cancellable = true
     )
     private void onUpdateTrackedStatus(ServerPlayerEntity player, CallbackInfo ci) {
-        if (entity instanceof ServerPlayerEntity && player != entity &&
+        if (player != entity && entity instanceof ServerPlayerEntity &&
                 !HidePlayer.getVisibilityManager().getPlayerCapability((ServerPlayerEntity) entity).showInGame(player)) {
             ci.cancel();
         }

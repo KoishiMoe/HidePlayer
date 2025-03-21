@@ -99,3 +99,43 @@ publishing {
         // retrieving dependencies.
     }
 }
+
+task generateMixinConfigList {
+    description = 'Generates default mixin config list by scanning mixin classes'
+    group = 'build'
+
+    doLast {
+        def mixinDir = project.file('src/main/java/dev/lolihub/hideplayer/mixin')
+        def mixinList = new StringBuilder()
+
+        if (mixinDir.exists()) {
+            findMixinClasses(mixinDir, 'dev.lolihub.hideplayer.mixin', mixinList)
+        }
+
+        // Update the MixinConfig class
+        def mixinConfigFile = project.file('src/main/java/dev/lolihub/hideplayer/config/MixinConfig.java')
+        def content = mixinConfigFile.text
+        def updatedContent = content.replace('# PLACEHOLDER #', mixinList.toString())
+        mixinConfigFile.text = updatedContent
+
+        println "Generated mixin config with ${mixinList.toString().count('\n')} entries"
+    }
+}
+
+def findMixinClasses(File dir, String packageName, StringBuilder result) {
+    dir.eachFile { file ->
+        if (file.isDirectory()) {
+            findMixinClasses(file, packageName + "." + file.name, result)
+        } else if (file.name.endsWith(".java")) {
+            def className = file.name.substring(0, file.name.length() - 5)
+
+            def fileContent = file.text
+            if (fileContent.contains("@Mixin")) {
+                result.append("${className}=true\n")
+            }
+        }
+    }
+}
+
+// Make the processResources task depend on the mixin config generation
+processResources.dependsOn generateMixinConfigList
