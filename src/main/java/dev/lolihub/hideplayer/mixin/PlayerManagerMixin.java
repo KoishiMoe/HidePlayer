@@ -67,18 +67,7 @@ public abstract class PlayerManagerMixin {
             )
     )
     private void redirectSendToAll(PlayerManager instance, Packet<?> packet, @Local(argsOnly = true) ServerPlayerEntity player) {
-        assert packet instanceof PlayerListS2CPacket;
-        var vm = HidePlayer.getVisibilityManager();
-        if (vm.getPlayerCapability(player).showInGame()) {
-            instance.sendToAll(packet);
-        } else {
-            for (ServerPlayerEntity p : instance.getPlayerList()) {
-                if (vm.getPlayerCapability(p).canSeeHiddenPlayer()) {
-                    p.networkHandler.sendPacket(packet);
-                }
-            }
-            player.networkHandler.sendPacket(packet);
-        }
+        Commons.redirectSendToAll(instance, packet, player);
     }
 
     // playerlist to everyone when update player latency

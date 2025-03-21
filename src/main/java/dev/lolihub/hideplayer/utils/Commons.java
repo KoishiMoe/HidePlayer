@@ -3,8 +3,10 @@ package dev.lolihub.hideplayer.utils;
 import dev.lolihub.hideplayer.HidePlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.network.packet.s2c.play.ScoreboardScoreUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerManager;
 import net.minecraft.server.ServerMetadata;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -42,5 +44,20 @@ public class Commons {
                 metadata.favicon(),
                 metadata.secureChatEnforced()
         );
+    }
+
+    public static void redirectSendToAll(PlayerManager instance, Packet<?> packet, ServerPlayerEntity player) {
+        assert packet instanceof PlayerListS2CPacket;
+        var vm = HidePlayer.getVisibilityManager();
+        if (vm.getPlayerCapability(player).showInGame()) {
+            instance.sendToAll(packet);
+        } else {
+            for (ServerPlayerEntity p : instance.getPlayerList()) {
+                if (vm.getPlayerCapability(p).canSeeHiddenPlayer()) {
+                    p.networkHandler.sendPacket(packet);
+                }
+            }
+            player.networkHandler.sendPacket(packet);
+        }
     }
 }
