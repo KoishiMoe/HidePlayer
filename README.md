@@ -6,7 +6,7 @@ A Minecraft server mod that allows selectively hiding players from various serve
 
 ## Supported Versions
 
-Currently only 1.21.4+ is supported, because I just wrote it for my own use and I'm not sure if anyone else would need it.
+Currently only 1.21.4+ and 1.20.1 are supported, because I just wrote it for my own use and I'm not sure if anyone else would need it.
 If you need support for other versions, feel free to open an issue or a pull request.
 
 ## Features
