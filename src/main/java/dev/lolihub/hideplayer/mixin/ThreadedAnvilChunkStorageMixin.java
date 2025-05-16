@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(targets = "net.minecraft.server.world.ServerChunkLoadingManager$EntityTracker")
-public class ServerChunkLoadingManagerMixin {
+@Mixin(targets = "net.minecraft.server.world.ThreadedAnvilChunkStorage$EntityTracker")
+public class ThreadedAnvilChunkStorageMixin {
     @Final
     @Shadow
     Entity entity;

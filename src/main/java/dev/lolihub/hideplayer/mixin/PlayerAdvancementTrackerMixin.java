@@ -17,7 +17,7 @@ public class PlayerAdvancementTrackerMixin {
 
     // advancement message
     @ModifyArg(
-            method = "method_53637",  // advancement.value().display().ifPresent lambda
+            method = "grantCriterion",  // advancement.value().display().ifPresent lambda
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"

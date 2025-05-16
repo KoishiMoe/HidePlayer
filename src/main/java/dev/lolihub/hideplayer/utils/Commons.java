@@ -4,7 +4,7 @@ import dev.lolihub.hideplayer.HidePlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.network.packet.s2c.play.ScoreboardScoreUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.ScoreboardPlayerUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.ServerMetadata;
@@ -15,9 +15,9 @@ import java.util.Optional;
 
 public class Commons {
     public static void filterScoreBoardPackets(ServerPlayNetworkHandler instance, Packet<?> packet) {
-        if (packet instanceof ScoreboardScoreUpdateS2CPacket scorePacket) {
+        if (packet instanceof ScoreboardPlayerUpdateS2CPacket scorePacket) {
             ServerPlayerEntity viewer = instance.getPlayer();
-            String targetName = scorePacket.scoreHolderName();
+            String targetName = scorePacket.getPlayerName();
 
             if (targetName.equals(viewer.getGameProfile().getName())
                     || HidePlayer.getVisibilityManager().getPlayerCapability(viewer).canSeeHiddenPlayer()

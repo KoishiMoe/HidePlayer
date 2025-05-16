@@ -3,7 +3,7 @@ package dev.lolihub.hideplayer.mixin;
 import dev.lolihub.hideplayer.HidePlayer;
 import dev.lolihub.hideplayer.utils.Commons;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.ScoreboardScoreUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.ScoreboardPlayerUpdateS2CPacket;
 import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class ServerScoreboardMixin {
     // add scoreboard
     @Redirect(
-            method = "startSyncing",
+            method = "addScoreboardObjective",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"
@@ -36,9 +36,9 @@ public class ServerScoreboardMixin {
     )
     private void filterScoreUpdate(PlayerManager instance, Packet<?> packet) {
         var vm = HidePlayer.getVisibilityManager();
-        if (packet instanceof ScoreboardScoreUpdateS2CPacket scorePacket) {
+        if (packet instanceof ScoreboardPlayerUpdateS2CPacket scorePacket) {
             for (ServerPlayerEntity viewer : instance.getPlayerList()) {
-                String targetName = scorePacket.scoreHolderName();
+                String targetName = scorePacket.getPlayerName();
 
                 if (targetName.equals(viewer.getGameProfile().getName())
                         || vm.getPlayerCapability(viewer).canSeeHiddenPlayer()

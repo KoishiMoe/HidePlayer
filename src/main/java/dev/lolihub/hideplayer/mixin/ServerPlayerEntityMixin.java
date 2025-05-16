@@ -51,7 +51,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             method = "onDeath(Lnet/minecraft/entity/damage/DamageSource;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V"
+                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V"
             )
     )
     private void sendDeathPacket(ServerPlayNetworkHandler serverPlayNetworkHandler, Packet<?> packet, PacketCallbacks packetCallbacks, @Local Text text) {
@@ -64,10 +64,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 sendRaw = true;
         }
         if (sendRaw) {
-            serverPlayNetworkHandler.send(packet, packetCallbacks);
+            serverPlayNetworkHandler.sendPacket(packet, packetCallbacks);
             return;
         }
-        serverPlayNetworkHandler.send(
+        serverPlayNetworkHandler.sendPacket(
                 new DeathMessageS2CPacket(this.getId(), ((HiddenPlayerKillText) text)._getGenericText()),
                 PacketCallbacks.of(
                         () -> new DeathMessageS2CPacket(
