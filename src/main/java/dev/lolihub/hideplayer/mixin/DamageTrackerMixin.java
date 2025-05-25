@@ -31,7 +31,7 @@ public class DamageTrackerMixin {
     private void onGetDeathMessage(CallbackInfoReturnable<Text> cir) {
         // death caused by hidden player
         if (!recentDamage.isEmpty()) {
-            DamageSource source = recentDamage.getLast().damageSource();
+            DamageSource source = recentDamage.get(recentDamage.size()-1).damageSource();
             ServerPlayerEntity player = null;
             if (source.getSource() instanceof ServerPlayerEntity) {
                 player = (ServerPlayerEntity) source.getSource();
