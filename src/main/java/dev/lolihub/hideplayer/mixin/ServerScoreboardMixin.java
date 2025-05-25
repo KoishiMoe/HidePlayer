@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class ServerScoreboardMixin {
     // add scoreboard
     @Redirect(
-            method = "startSyncing",
+            method = "addScoreboardObjective",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"

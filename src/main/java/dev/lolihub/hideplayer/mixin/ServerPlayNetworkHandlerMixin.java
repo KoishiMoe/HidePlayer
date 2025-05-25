@@ -45,16 +45,16 @@ public class ServerPlayNetworkHandlerMixin {
     }
 
     // hat change
-    @Redirect(
-            method = "onClientOptions",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/PlayerManager;sendToAll(Lnet/minecraft/network/packet/Packet;)V"
-            )
-    )
-    private void redirectSendToAll(PlayerManager instance, Packet<?> packet) {
-        Commons.redirectSendToAll(instance, packet, this.player);
-    }
+//    @Redirect(
+//            method = "onClientOptions",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Lnet/minecraft/server/PlayerManager;sendToAll(Lnet/minecraft/network/packet/Packet;)V"
+//            )
+//    )
+//    private void redirectSendToAll(PlayerManager instance, Packet<?> packet) {
+//        Commons.redirectSendToAll(instance, packet, this.player);
+//    }
 
     // initialize chat session
     @Redirect(
