@@ -11,6 +11,12 @@ on:
     tags-ignore:
       - '**'
   pull_request:
+  workflow_dispatch:
+    inputs:
+        release:
+          description: 'Release this build'
+          required: false
+          default: 'false'
 
 permissions:
   contents: read
@@ -62,7 +68,7 @@ jobs:
           echo "VERIFIED=$VERIFIED" >> $GITHUB_ENV
 
       - name: Publish Release
-        if: ${{ github.event_name != 'pull_request' && (github.event.inputs.release == 'true' || (env.COMMIT_AUTHOR == 'KoishiMoe' && env.VERIFIED == 'true' && contains(github.event.head_commit.message, '[release]'))) }}
+        if: ${{ (github.event_name != 'pull_request' && (github.event.inputs.release == 'true' || (env.COMMIT_AUTHOR == 'KoishiMoe' && env.VERIFIED == 'true' && contains(github.event.head_commit.message, '[release]')))) || (github.event_name == 'workflow_dispatch' && github.event.inputs.release == 'true') }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           # Only include this section if you wish to publish
