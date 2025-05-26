@@ -51,6 +51,20 @@ Maybe useful for:
 Though generally not necessary, if you face any issues, like mod conflicts, or severe performance drops, you can edit `config/hideplayer.mixin.conf`
 and disable mixins selectively. Please note that this may break the mod functionality.
 
+## How it works & Limitations
+
+This mod uses mixins to intercept and modify the behavior of Minecraft's server code. It hides players by preventing their data from being sent to clients. This brings the following benefits:
+- No client-side modifications required (works with vanilla clients)
+- Impossible for players to bypass the hiding (the client never receives the data)
+- Works on some server interfaces that are not easily modifiable (like server status and query)
+
+However, it also has some limitations:
+- Some functions this mod injects are called quite frequently, which might cause performance issues (though I haven't noticed any significant impact in my tests)
+- It might not work with some both-side mods, if the mod sends player data to the client in a way that this mod cannot intercept. This might cause leaks of hidden player data in some cases, and even crashes the client mod if it tries to access hidden player data. As there're so many mods out there, I can't guarantee compatibility with all of them.
+- Players (both the hidden and others) will need to reconnect to the server to reflect any changes in permissions. 
+  - This is because, Minecraft does quite a lot of things to tell the client about player joining and leaving. After that, the server only sends updates about player data. If we modify permissions on the fly, the client will just receive some updates, but without initial data, which is confusing for the client and will cause unexpected behaviors.
+  - Another reason is that, sometimes permission checking is expensive, and we don't want to do it every time the player data is sent to the client. So we just check permissions when the player joins, and cache the result.
+
 ## License
 
 AGPL-3.0-or-later
