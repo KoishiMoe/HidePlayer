@@ -64,6 +64,9 @@ However, it also has some limitations:
 - Players (both the hidden and others) will need to reconnect to the server to reflect any changes in permissions. 
   - This is because, Minecraft does quite a lot of things to tell the client about player joining and leaving. After that, the server only sends updates about player data. If we modify permissions on the fly, the client will just receive some updates, but without initial data, which is confusing for the client and will cause unexpected behaviors.
   - Another reason is that, sometimes permission checking is expensive, and we don't want to do it every time the player data is sent to the client. So we just check permissions when the player joins, and cache the result.
+- Some finer controls, like hiding players from tab list but not other interfaces, are not supported.
+  - The client updates the tab list based on the player list it receives from the server. If we want to hide this, we have to remove the player from player list. However, the client will not render the player entity but print an error instead if it is not found in the player list.
+  - Similarly, other interfaces like social screen, etc. are also based on the player list. So we can't hide players from some interfaces without hiding them from others.
 
 ## License
 
