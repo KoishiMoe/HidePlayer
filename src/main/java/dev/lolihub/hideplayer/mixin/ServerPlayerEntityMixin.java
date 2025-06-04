@@ -6,6 +6,7 @@ import com.mojang.authlib.GameProfile;
 import dev.lolihub.hideplayer.HidePlayer;
 import dev.lolihub.hideplayer.utils.HiddenPlayerKillText;
 import dev.lolihub.hideplayer.utils.HiddenPlayerText;
+import io.netty.channel.ChannelFutureListener;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;
@@ -15,7 +16,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
-    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
-        super(world, pos, yaw, gameProfile);
+    public ServerPlayerEntityMixin(World world, GameProfile gameProfile) {
+        super(world, gameProfile);
     }
 
     // all system messages go through this method
@@ -51,10 +51,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             method = "onDeath(Lnet/minecraft/entity/damage/DamageSource;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V"
+                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;send(Lnet/minecraft/network/packet/Packet;Lio/netty/channel/ChannelFutureListener;)V"
             )
     )
-    private void sendDeathPacket(ServerPlayNetworkHandler serverPlayNetworkHandler, Packet<?> packet, PacketCallbacks packetCallbacks, @Local Text text) {
+    private void sendDeathPacket(ServerPlayNetworkHandler serverPlayNetworkHandler, Packet packet, ChannelFutureListener channelFutureListener, @Local Text text) {
         boolean sendRaw = !(text instanceof HiddenPlayerText);
         if (!sendRaw) {
             if (((HiddenPlayerText) text)._getPlayerUUID().equals(this.getUuidAsString())) sendRaw = true;
@@ -64,7 +64,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 sendRaw = true;
         }
         if (sendRaw) {
-            serverPlayNetworkHandler.send(packet, packetCallbacks);
+            serverPlayNetworkHandler.send(packet, channelFutureListener);
             return;
         }
         serverPlayNetworkHandler.send(
