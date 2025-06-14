@@ -12,6 +12,7 @@ public class PlayerCapability {
 
         boolean statusAndQuery = false;
         boolean scoreBoard = false;
+        boolean locatorBar = false;
     }
 
     static class Privilege {
@@ -40,13 +41,23 @@ public class PlayerCapability {
     }
 
     public boolean showInGame(ServerPlayerEntity player) {
-        return player.getUuidAsString().equals(this.player.getUuidAsString())
-                || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer()
-                || this.showInGame();
+        return this.showInGame()
+                || player.getUuidAsString().equals(this.player.getUuidAsString())
+                || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer();
     }
 
     public boolean showStatusAndQuery() {
         return !this.hideFrom.statusAndQuery;
+    }
+
+    public boolean showInLocatorBar() {
+        return !this.hideFrom.locatorBar;
+    }
+
+    public boolean showInLocatorBar(ServerPlayerEntity player) {
+        return this.showInLocatorBar()
+                || player.getUuidAsString().equals(this.player.getUuidAsString())
+                || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer();
     }
 
     public void flush() {
@@ -55,6 +66,7 @@ public class PlayerCapability {
             this.hideFrom.inGame = Permissions.check(this.player, "hideplayer.hide.ingame");
             this.hideFrom.statusAndQuery = Permissions.check(this.player, "hideplayer.hide.statusandquery");
             this.hideFrom.scoreBoard = Permissions.check(this.player, "hideplayer.hide.scoreboard");
+            this.hideFrom.locatorBar = Permissions.check(this.player, "hideplayer.hide.locatorbar");
             this.privilege.canSeeHiddenPlayer = Permissions.check(this.player, "hideplayer.privilege.seehiddenplayer", 2);
         }
         if (this.hideFrom.scoreBoard) {

@@ -34,6 +34,7 @@ Maybe useful for:
 - `hideplayer.hide.ingame` - Hide in-game presence and chat
 - `hideplayer.hide.statusandquery` - Hide from server status/query
 - `hideplayer.hide.scoreboard` - Hide scoreboard entries
+- `hideplayer.hide.locatorbar` - Hide from locator bar
 
 ### Administrative Permission
 - `hideplayer.privilege.seehiddenplayer` - See hidden players (default for ops)

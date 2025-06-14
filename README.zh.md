@@ -30,6 +30,7 @@
 - `hideplayer.hide.ingame` - 隐藏游戏内存在和聊天消息
 - `hideplayer.hide.statusandquery` - 在服务器状态/查询中隐藏
 - `hideplayer.hide.scoreboard` - 隐藏计分板条目
+- `hideplayer.hide.locatorbar` - 在定位条中隐藏玩家
 
 ### 管理权限
 - `hideplayer.privilege.seehiddenplayer` - 查看被隐藏的玩家（所有op默认拥有）

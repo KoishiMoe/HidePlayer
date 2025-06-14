@@ -17,6 +17,7 @@
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",
     "ServerScoreboardMixin",
+    "ServerWaypointMixin",
     "TeamMsgCommandMixin"
   ],
   "injectors": {
