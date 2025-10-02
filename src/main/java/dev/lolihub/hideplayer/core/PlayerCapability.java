@@ -70,9 +70,9 @@ public class PlayerCapability {
             this.privilege.canSeeHiddenPlayer = Permissions.check(this.player, "hideplayer.privilege.seehiddenplayer", 2);
         }
         if (this.hideFrom.scoreBoard) {
-            HidePlayer.getVisibilityManager().getScoreBoardCache().add(this.player.getGameProfile().getName());
+            HidePlayer.getVisibilityManager().getScoreBoardCache().add(this.player.getGameProfile().name());
         } else {
-            HidePlayer.getVisibilityManager().getScoreBoardCache().remove(this.player.getGameProfile().getName());
+            HidePlayer.getVisibilityManager().getScoreBoardCache().remove(this.player.getGameProfile().name());
         }
     }
 }

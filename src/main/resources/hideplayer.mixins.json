@@ -7,12 +7,12 @@
   "mixins": [
     "DamageTrackerMixin",
     "MessageCommandMixin",
+    "MinecraftServerMixin",
     "PlayerAdvancementTrackerMixin",
     "PlayerManagerMixin",
     "QueryResponseHandlerMixin",
     "RandomCommandMixin",
     "ServerChunkLoadingManagerMixin",
-    "ServerHandshakeNetworkHandlerMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",

@@ -8,9 +8,7 @@ import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
-import net.minecraft.server.ServerMetadata;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -125,17 +123,5 @@ public abstract class PlayerManagerMixin {
     )
     private void redirectSendScoreboard(ServerPlayNetworkHandler instance, Packet<?> packet) {
         Commons.filterScoreBoardPackets(instance, packet);
-    }
-
-    // Currently no leak found in this call, but just in case
-    @Redirect(
-            method = "onPlayerConnect",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/MinecraftServer;getServerMetadata()Lnet/minecraft/server/ServerMetadata;"
-            )
-    )
-    private ServerMetadata getServerMetadata(MinecraftServer server) {
-        return Commons.getServerMetadata(server);
     }
 }

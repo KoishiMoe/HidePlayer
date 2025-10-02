@@ -52,7 +52,7 @@ public class QueryResponseHandlerMixin {
                 .filter(player -> HidePlayer.getVisibilityManager()
                         .getPlayerCapability(player)
                         .showStatusAndQuery())
-                .map(player -> player.getGameProfile().getName())
+                .map(player -> player.getGameProfile().name())
                 .toArray(String[]::new);
     }
 }

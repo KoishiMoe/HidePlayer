@@ -40,7 +40,7 @@ public class ServerScoreboardMixin {
             for (ServerPlayerEntity viewer : instance.getPlayerList()) {
                 String targetName = scorePacket.scoreHolderName();
 
-                if (targetName.equals(viewer.getGameProfile().getName())
+                if (targetName.equals(viewer.getGameProfile().name())
                         || vm.getPlayerCapability(viewer).canSeeHiddenPlayer()
                         || vm.getScoreBoardCache().checkNoHide(targetName)) {
                     viewer.networkHandler.sendPacket(packet);
