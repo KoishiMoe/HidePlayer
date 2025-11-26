@@ -3,9 +3,9 @@ package dev.lolihub.hideplayer.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.lolihub.hideplayer.HidePlayer;
 import dev.lolihub.hideplayer.utils.HiddenPlayerText;
-import net.minecraft.server.command.RandomCommand;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.commands.RandomCommand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -14,15 +14,15 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class RandomCommandMixin {
     // /random roll will broadcast a message
     @ModifyArg(
-            method = "execute",
+            method = "randomSample",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"
             ),
             index = 0
     )
-    private static Text modifyRollMessage(Text message, @Local(argsOnly = true) ServerCommandSource source) {
-        if (source.isExecutedByPlayer()) {
+    private static Component modifyRollMessage(Component message, @Local(argsOnly = true) CommandSourceStack source) {
+        if (source.isPlayer()) {
             var player = source.getPlayer();
             if (HidePlayer.getVisibilityManager().getPlayerCapability(player).hideSystemMessage()) {
                 assert player != null;

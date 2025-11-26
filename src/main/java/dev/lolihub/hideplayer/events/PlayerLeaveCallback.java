@@ -2,7 +2,7 @@ package dev.lolihub.hideplayer.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 // Copied from https://github.com/ByMartrixx/player-events/blob/master/api/src/main/java/me/bymartrixx/playerevents/api/event/PlayerLeaveCallback.java
 
@@ -13,5 +13,5 @@ public interface PlayerLeaveCallback {
         }
     });
 
-    void leaveServer(ServerPlayerEntity player);
+    void leaveServer(ServerPlayer player);
 }

@@ -1,23 +1,22 @@
 package dev.lolihub.hideplayer.core;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.server.level.ServerPlayer;
 
 public class VisibilityManager {
-    private final Map<ServerPlayerEntity, PlayerCapability> capabilityMap = new ConcurrentHashMap<>();
+    private final Map<ServerPlayer, PlayerCapability> capabilityMap = new ConcurrentHashMap<>();
     private final ScoreBoardCache scoreBoardCache;
 
     public VisibilityManager() {
         scoreBoardCache = new ScoreBoardCache();
     }
 
-    public void playerLeave(ServerPlayerEntity player) {
+    public void playerLeave(ServerPlayer player) {
         capabilityMap.remove(player);
     }
 
-    public PlayerCapability getPlayerCapability(ServerPlayerEntity player) {
+    public PlayerCapability getPlayerCapability(ServerPlayer player) {
         var capability = capabilityMap.get(player);
         if (capability == null) {
             capability = new PlayerCapability(player);

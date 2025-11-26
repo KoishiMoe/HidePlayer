@@ -2,7 +2,7 @@ package dev.lolihub.hideplayer.core;
 
 import dev.lolihub.hideplayer.HidePlayer;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class PlayerCapability {
     static class HideFrom {
@@ -21,9 +21,9 @@ public class PlayerCapability {
 
     HideFrom hideFrom = new HideFrom();
     Privilege privilege = new Privilege();
-    ServerPlayerEntity player;  // Store player instead of uuid, as the player object is needed to check permissions
+    ServerPlayer player;  // Store player instead of uuid, as the player object is needed to check permissions
 
-    public PlayerCapability(ServerPlayerEntity player) {
+    public PlayerCapability(ServerPlayer player) {
         this.player = player;
         this.flush();
     }
@@ -40,9 +40,9 @@ public class PlayerCapability {
         return !this.hideFrom.inGame;
     }
 
-    public boolean showInGame(ServerPlayerEntity player) {
+    public boolean showInGame(ServerPlayer player) {
         return this.showInGame()
-                || player.getUuidAsString().equals(this.player.getUuidAsString())
+                || player.getStringUUID().equals(this.player.getStringUUID())
                 || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer();
     }
 
@@ -54,9 +54,9 @@ public class PlayerCapability {
         return !this.hideFrom.locatorBar;
     }
 
-    public boolean showInLocatorBar(ServerPlayerEntity player) {
+    public boolean showInLocatorBar(ServerPlayer player) {
         return this.showInLocatorBar()
-                || player.getUuidAsString().equals(this.player.getUuidAsString())
+                || player.getStringUUID().equals(this.player.getStringUUID())
                 || HidePlayer.getVisibilityManager().getPlayerCapability(player).canSeeHiddenPlayer();
     }
 

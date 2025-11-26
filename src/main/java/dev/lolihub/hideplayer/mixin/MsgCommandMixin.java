@@ -5,15 +5,15 @@ import dev.lolihub.hideplayer.HidePlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.OutgoingChatMessage;
-import net.minecraft.server.commands.TeamMsgCommand;
+import net.minecraft.server.commands.MsgCommand;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(TeamMsgCommand.class)
-public class TeamMsgCommandMixin {
-    // /teammsg
+@Mixin(MsgCommand.class)
+public class MsgCommandMixin {
+    // /msg, /tell, /w
     @Redirect(
             method = "sendMessage",
             at = @At(

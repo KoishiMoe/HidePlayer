@@ -1,20 +1,19 @@
 package dev.lolihub.hideplayer.utils;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextContent;
-
 import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.FormattedCharSequence;
 
-public class HiddenPlayerText implements Text {
-    private final Text text;
+public class HiddenPlayerText implements Component {
+    private final Component text;
     private final String playerUUID;
 
-    public HiddenPlayerText(Text text, ServerPlayerEntity player) {
+    public HiddenPlayerText(Component text, ServerPlayer player) {
         this.text = text;
-        this.playerUUID = player.getUuidAsString();
+        this.playerUUID = player.getStringUUID();
     }
 
     @Override
@@ -23,18 +22,18 @@ public class HiddenPlayerText implements Text {
     }
 
     @Override
-    public TextContent getContent() {
-        return text.getContent();
+    public ComponentContents getContents() {
+        return text.getContents();
     }
 
     @Override
-    public List<Text> getSiblings() {
+    public List<Component> getSiblings() {
         return text.getSiblings();
     }
 
     @Override
-    public OrderedText asOrderedText() {
-        return text.asOrderedText();
+    public FormattedCharSequence getVisualOrderText() {
+        return text.getVisualOrderText();
     }
 
     public String _getPlayerUUID() {
