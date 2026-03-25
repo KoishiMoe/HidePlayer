@@ -3,6 +3,7 @@ package dev.lolihub.hideplayer.core;
 import dev.lolihub.hideplayer.HidePlayer;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.PermissionLevel;
 
 public class PlayerCapability {
     static class HideFrom {
@@ -67,7 +68,7 @@ public class PlayerCapability {
             this.hideFrom.statusAndQuery = Permissions.check(this.player, "hideplayer.hide.statusandquery");
             this.hideFrom.scoreBoard = Permissions.check(this.player, "hideplayer.hide.scoreboard");
             this.hideFrom.locatorBar = Permissions.check(this.player, "hideplayer.hide.locatorbar");
-            this.privilege.canSeeHiddenPlayer = Permissions.check(this.player, "hideplayer.privilege.seehiddenplayer", 2);
+            this.privilege.canSeeHiddenPlayer = Permissions.check(this.player, "hideplayer.privilege.seehiddenplayer", PermissionLevel.GAMEMASTERS);
         }
         if (this.hideFrom.scoreBoard) {
             HidePlayer.getVisibilityManager().getScoreBoardCache().add(this.player.getGameProfile().name());

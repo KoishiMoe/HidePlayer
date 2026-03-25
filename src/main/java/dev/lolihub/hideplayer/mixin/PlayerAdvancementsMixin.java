@@ -17,7 +17,7 @@ public class PlayerAdvancementsMixin {
 
     // advancement message
     @ModifyArg(
-            method = "method_53637",  // advancement.value().display().ifPresent lambda
+            method = "lambda$award$0",  // holder.value().display().ifPresent lambda
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"

@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class TrackedEntityMixin {
     @Final
     @Shadow
-    Entity entity;
+    private Entity entity;
 
     // Prevents server from sending entity spawn packet to players who shouldn't see the player. This solves the issue of leaking player's UUID.
     @Inject(

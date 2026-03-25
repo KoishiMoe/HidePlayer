@@ -58,7 +58,7 @@ public class ServerGamePacketListenerImplMixin {
 
     // initialize chat session
     @Redirect(
-            method = "method_54439",  // inside setSession()
+            method = "lambda$resetPlayerChatState$0",  // inside resetPlayerChatState()
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V"
