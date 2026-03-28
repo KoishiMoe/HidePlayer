@@ -124,7 +124,8 @@ public abstract class DefaultConfig {
 # If the key is not present in this file, the mixin will **still** be loaded.
 # Please note that this file is not reloaded at runtime, you need to restart the server to apply changes.
 # Also, this file is for advanced users only, who would like to solve compatibility issues with other mods, or tune the performance of HidePlayer.
-# Make sure you know what are the mixins used for by reading the source code of HidePlayer.
+# Make sure you know what are the mixins used for by reading the source code of HidePlayer, which is available on GitHub:
+# https://github.com/KoishiMoe/HidePlayer
 
 ${mixinList.toString()}
 \"\"\";
