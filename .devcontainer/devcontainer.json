@@ -1,0 +1,57 @@
+{
+  "name": "HidePlayer",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspace/HidePlayer",
+  "workspaceMount": "type=bind,source=${localWorkspaceFolder},target=/workspace/HidePlayer,relabel=private",
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": true,
+  "runArgs": [
+    "--userns=keep-id",
+    "--security-opt=label=type:container_runtime_t",
+    "--device=/dev/dri"
+  ],
+  "initializeCommand": "bash -c 'cp \"${XAUTHORITY:-$HOME/.Xauthority}\" /tmp/.host_xauthority || touch /tmp/.host_xauthority'",
+  "mounts": [
+    "type=volume,source=hideplayer-gradle-cache,target=/home/vscode/.gradle",
+    "type=volume,source=hideplayer-maven-cache,target=/home/vscode/.m2",
+    "type=volume,source=hideplayer-idea-cache,target=/home/vscode/.cache/JetBrains",
+    "type=bind,source=/tmp/.X11-unix,target=/tmp/.X11-unix,readonly",
+    "type=bind,source=/tmp/.host_xauthority,target=/tmp/.Xauthority,readonly",
+    "type=bind,source=${localEnv:XDG_RUNTIME_DIR}/pulse,target=${localEnv:XDG_RUNTIME_DIR}/pulse"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "configureZshAsDefaultShell": true,
+      "installZsh": true,
+      "upgradePackages": false
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "25",
+      "jdkDistro": "zulu",
+      "additionalVersions": "8,17,21",
+      "installGradle": false,
+      "installMaven": false
+    }
+  },
+  "containerEnv": {
+    "DISPLAY": "${localEnv:DISPLAY}",
+    "XAUTHORITY": "/tmp/.Xauthority",
+    "XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
+    "PULSE_SERVER": "unix:${localEnv:XDG_RUNTIME_DIR}/pulse/native",
+    "GRADLE_USER_HOME": "/home/vscode/.gradle",
+    "MAVEN_OPTS": "-Dmaven.repo.local=/home/vscode/.m2/repository"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack"
+      ]
+    },
+    "jetbrains": {
+      "backend": "Idea"
+    }
+  },
+  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode"
+}
