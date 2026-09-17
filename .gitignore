@@ -119,3 +119,5 @@ runs/
 !gradle-wrapper.jar
 
 src/main/java/dev/lolihub/hideplayer/config/DefaultConfig.java
+
+.devcontainer/
